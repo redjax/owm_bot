@@ -1,0 +1,7 @@
+[default]
+
+owm_location_file = "locations.json"
+
+[dev]
+
+[prod]
