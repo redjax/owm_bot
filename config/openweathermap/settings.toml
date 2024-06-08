@@ -1,6 +1,6 @@
 [default]
 
-owm_location_file = "locations.json"
+owm_location_file = "location.json"
 
 [dev]
 

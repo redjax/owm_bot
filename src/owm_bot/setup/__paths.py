@@ -2,7 +2,7 @@ from pathlib import Path
 
 import logging
 
-log = logging.getLogger("weatherbot.setup")
+log = logging.getLogger("owm_bot.setup")
 
 from owm_bot.core.paths import ENSURE_DIRS
 

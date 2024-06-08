@@ -29,112 +29,89 @@ class JsonLocation(JsonLocationBase):
 
 
 class JsonLocationsLoaderBase(BaseModel):
-    pass
+    location_file: t.Union[str, Path] = Field(default=None)
+    location: JsonLocation | None = Field(default=None)
 
+    @property
+    def file_exists(self) -> bool:
+        return self.location_file.exists()
 
-class JsonLocationsLoader(JsonLocationsLoaderBase):
-    locations_file: t.Union[str, Path] = Field(default=None)
-    locations: list[JsonLocation] = Field(default=[])
-
-    @field_validator("locations_file")
-    def validate_locations_file(cls, v):
+    @field_validator("location_file")
+    def validate_location_file(cls, v):
         v = Path(f"{v}")
 
         return v
 
-    @property
-    def file_exists(self) -> bool:
-        return self.locations_file.exists()
 
-    @property
-    def count_locations(self) -> int:
-        if (
-            self.locations is None
-            or isinstance(self.locations, list)
-            and len(self.locations) == 0
-        ):
-            return 0
-        else:
-            return len(self.locations)
+class JsonLocationsLoader(JsonLocationsLoaderBase):
 
     def load_from_file(self) -> list[JsonLocation]:
-        try:
-            with open(self.locations_file, "r") as f:
-                locations = json.loads(f.read())
-                log.debug(
-                    f"Loaded [{len(locations)}] location(s) from OpenWeathermap locations file: {self.locations_file}"
-                )
-        except FileNotFoundError as fnf_err:
-            log.warning(
-                f"Could not find locations file at {self.locations_file}. Create a file with location(s) for the app before re-running."
-            )
-
-            raise fnf_err
-        except Exception as exc:
-            msg = Exception(
-                f"Unhandled exception reading locations file into dict. Details: {exc}"
+        if not self.file_exists:
+            msg = FileNotFoundError(
+                f"Could not find location file at {self.location_file}. Create a JSON file with data about the location you want weather for, before re-running."
             )
             log.error(msg)
-            locations = None
+
+            raise msg
+
+        try:
+            with open(self.location_file, "r") as f:
+                location_dict = json.loads(f.read())
+
+        except Exception as exc:
+            msg = Exception(
+                f"Unhandled exception reading location file into dict. Details: {exc}"
+            )
+            log.error(msg)
+            location_dict = None
 
             raise exc
 
-        _locations: list[JsonLocation] = []
+        try:
+            _location: JsonLocation = JsonLocation.model_validate(location_dict)
 
-        for location_dict in locations:
-            try:
-                _loc: JsonLocation = JsonLocation.model_validate(location_dict)
-                _locations.append(_loc)
-            except Exception as exc:
-                msg = Exception(
-                    f"Unhandled exception converting location dict loaded from JSON file '{self.locations_file}'. Details: {exc}"
-                )
-                log.warning(msg)
+        except Exception as exc:
+            msg = Exception(
+                f"Unhandled exception converting location dict loaded from JSON file '{self.location_file}'. Details: {exc}"
+            )
+            log.warning(msg)
 
-                continue
+        self.location = _location
 
-        self.locations = _locations
-
-        return _locations
+        return _location
 
     def save_to_file(self, overwrite: bool = True) -> bool:
-        if (
-            self.locations is None
-            or isinstance(self.locations, list)
-            and len(self.locations) == 0
-        ):
+        if self.location is None:
             log.warning(f"Locations list is empty.")
 
             return False
 
         if self.file_exists and not overwrite:
             log.warning(
-                f"File '{self.locations_file}' exists, and overwrite=False. Skipping save."
+                f"File '{self.location_file}' exists, and overwrite=False. Skipping save."
             )
 
             return False
 
         try:
-            json_data = [location.model_dump() for location in self.locations]
+            json_data = self.location.model_dump()
         except Exception as exc:
             msg = Exception(
-                f"Unhandled exception dumping locations to JSON string. Details: {exc}"
+                f"Unhandled exception dumping location to JSON string. Details: {exc}"
             )
             log.error(msg)
 
             return False
 
-        log.debug(
-            f"Saving [{self.count_locations}] location(s) to file: {self.locations_file}"
-        )
+        log.debug(f"Saving location to file: {self.location_file}")
         try:
-            with open(self.locations_file, "w") as f:
+            with open(self.location_file, "w") as f:
                 json.dump(json_data, f, indent=2, cls=DecimalJsonEncoder)
 
             return True
         except Exception as exc:
             msg = Exception(
-                f"Unhandled exception dumping locations to file '{self.locations_file}'. Details: {exc}"
+                f"Unhandled exception dumping location to file '{self.location_file}'. Details: {exc}"
             )
             log.error(msg)
 
