@@ -139,7 +139,7 @@ def reverse_geocode(
         )
 
         log.info(f"Reverse geocoding lat-{lat}, lon-{lon}")
-        log.debug(f"URL: {req.url}")
+        # log.debug(f"URL: {req.url}")
         try:
             res = httpx_ctl.send_request(request=req)
         except Exception as exc:
@@ -150,7 +150,7 @@ def reverse_geocode(
 
             raise exc
 
-    log.info(f"Reverse geocode response: [{res.status_code}: {res.reason_phrase}]")
+    # log.info(f"Reverse geocode response: [{res.status_code}: {res.reason_phrase}]")
 
     if res.status_code == 200:
         try:
@@ -163,11 +163,19 @@ def reverse_geocode(
 
             raise exc
 
-        return _decode
-
     else:
         log.warning(
             f"Response non-successful: [{res.status_code}: {res.reason_phrase}]: {res.text}"
         )
 
         return None
+
+    if isinstance(_decode, list):
+        if len(_decode) == 0:
+            return None
+        if len(_decode) == 1:
+            return _decode[0]
+        else:
+            log.warning(f"Multiple results for lat: {lat} / lon: {lon}.")
+
+    return _decode
