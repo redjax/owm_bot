@@ -85,7 +85,7 @@ def get_coords(
             res: httpx.Response = cache_ctl.send_request(
                 request=req, debug_response=debug_http_response
             )
-            log.info(f"Geolocate response: [{res.status_code}: {res.reason_phrase}]")
+
         except Exception as exc:
             msg = Exception(
                 f"Unhandled exception sending geolocation request. Details: {exc}"

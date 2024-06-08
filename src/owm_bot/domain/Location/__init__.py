@@ -1,1 +1,1 @@
-from .schemas import JsonLocation, JsonLocationsLoader
+from .schemas import JsonLocation, JsonLocationsLoader, OwmGeoLookup

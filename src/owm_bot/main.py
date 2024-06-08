@@ -19,6 +19,8 @@ from owm_bot.location import (
     load_location_from_file,
     get_missing_coords,
     update_location_coords,
+    save_location_dict_to_file,
+    init_location,
     geolocate,
 )
 
@@ -31,13 +33,10 @@ if __name__ == "__main__":
     log.debug(f"Settings: {settings}")
     log.debug(f"OWM Settings: {owm_settings}")
 
-    location: JsonLocation = load_location_from_file()
+    location: JsonLocation = init_location()
     log.debug(f"Location: {location}")
 
-    updated_location: JsonLocation = get_missing_coords(location_obj=location)
-    log.debug(f"Updated location: {updated_location}")
-
-    reverse_lookup = geolocate.reverse_geocode(
-        lat=updated_location.lat, lon=updated_location.lon
-    )
-    log.debug(f"Reverse geolocation lookup: {reverse_lookup}")
+    # reverse_lookup = geolocate.reverse_geocode(
+    #     lat=updated_location.lat, lon=updated_location.lon
+    # )
+    # log.debug(f"Reverse geolocation lookup: {reverse_lookup}")

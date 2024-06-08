@@ -29,6 +29,10 @@ class JsonLocation(JsonLocationBase):
 
 
 class JsonLocationsLoaderBase(BaseModel):
+    pass
+
+
+class JsonLocationsLoader(JsonLocationsLoaderBase):
     location_file: t.Union[str, Path] = Field(default=None)
     location: JsonLocation | None = Field(default=None)
 
@@ -42,10 +46,7 @@ class JsonLocationsLoaderBase(BaseModel):
 
         return v
 
-
-class JsonLocationsLoader(JsonLocationsLoaderBase):
-
-    def load_from_file(self) -> list[JsonLocation]:
+    def load_from_file(self) -> JsonLocation:
         if not self.file_exists:
             msg = FileNotFoundError(
                 f"Could not find location file at {self.location_file}. Create a JSON file with data about the location you want weather for, before re-running."
