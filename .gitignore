@@ -198,6 +198,6 @@ cython_debug/
 ## Ignore mkdocs builds
 site/
 
-.data/weatherbot/owm_api_key
-.data/weatherbot/locations.json
-openweathermap_locations.json
+.data/owm_bot/owm_api_key
+.data/owm_bot/locations.json
+locations.json
