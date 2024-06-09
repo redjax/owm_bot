@@ -1,7 +1,7 @@
 import typing as t
 import logging
 
-log = logging.getLogger("owm_bot.weather.current")
+log = logging.getLogger("owm_bot.weather.forecast")
 
 from owm_bot.core import settings, owm_settings
 from owm_bot.core.paths import DATA_DIR, CACHE_DIR, HTTP_CACHE_DIR, OWM_HTTP_CACHE_DIR
@@ -17,29 +17,31 @@ from owm_bot.core.depends import (
 )
 from owm_bot.domain.Location import JsonLocation
 
-from owm_bot.domain.Weather import OWMCurrentWeather
+from owm_bot.domain.Weather import OWMForecastWeather
 
 from red_utils.ext import httpx_utils
 import httpx
 import hishel
 
 
-def current_weather(
+def weather_forecast(
     location: JsonLocation = None,
-    api_key: str = owm_settings.api_key,
+    days: int = 16,
     units: str = "standard",
+    api_key: str = owm_settings.api_key,
     cache_storage: (
         t.Union[hishel.FileStorage, hishel.InMemoryStorage, hishel.SQLiteStorage] | None
     ) = None,
     cache_ttl: int = 900,
     force_cache: bool = True,
-) -> OWMCurrentWeather:
+) -> OWMForecastWeather:
     if cache_storage is None:
         cache_storage = owm_hishel_filestorage_dependency(ttl=cache_ttl)
 
     params: dict = {
         "lat": str(location.lat),
         "lon": str(location.lon),
+        "cnt": str(days),
         "units": units,
         "appid": api_key,
     }
@@ -48,7 +50,7 @@ def current_weather(
         force_cache=force_cache, storage=cache_storage
     ) as http_ctl:
         req: httpx.Request = http_ctl.new_request(
-            url=OPENWEATHERMAP_CURRENT_WEATHER_URL, params=params
+            url=OPENWEATHERMAP_DAILY_FORECAST_WEATHER_URL, params=params
         )
 
         try:
@@ -69,7 +71,7 @@ def current_weather(
         return None
 
     try:
-        current_weather_dict: dict = http_ctl.decode_res_content(res)
+        weather_forecast_dict: dict = http_ctl.decode_res_content(res)
     except Exception as exc:
         msg = Exception(
             f"Unhandled exception decoding response content. Details: {exc}"
@@ -77,18 +79,18 @@ def current_weather(
         log.error(msg)
 
         raise exc
-    # log.debug(f"Current weather dict: {current_weather_dict}")
+    # log.debug(f"Weather forecast dict: {weather_forecast_dict}")
 
     try:
-        _current_weather: OWMCurrentWeather = OWMCurrentWeather.model_validate(
-            current_weather_dict
+        _weather_forecast: OWMForecastWeather = OWMForecastWeather.model_validate(
+            weather_forecast_dict
         )
     except Exception as exc:
         msg = Exception(
-            f"Unhandled exception converting current weather dict to OWMCurrentWeather object. Details: {exc}"
+            f"Unhandled exception converting weather forecast dict to OWMForecastWeatherEntry object. Details: {exc}"
         )
         log.error(msg)
 
         raise exc
 
-    return _current_weather
+    return _weather_forecast

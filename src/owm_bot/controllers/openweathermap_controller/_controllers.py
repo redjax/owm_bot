@@ -3,6 +3,9 @@ from pathlib import Path
 import logging
 from contextlib import AbstractContextManager
 
+from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
+from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
+
 log = logging.getLogger("owm_bot.controllers.openweathermap_controller")
 
 from owm_bot.core import settings, owm_settings
@@ -34,7 +37,7 @@ from owm_bot.location import (
     save_location_dict_to_file,
     update_location_coords,
 )
-from owm_bot.weather import get_current_weather
+from owm_bot.weather import get_current_weather, get_forecast_weather
 
 import hishel
 import httpx
@@ -44,6 +47,8 @@ class OpenWeathermapController(AbstractContextManager):
     def __init__(
         self,
         location_file: t.Union[str, Path] = owm_settings.location_file,
+        units: str = "standard",
+        forecast_days: int = 16,
         api_key: str = owm_settings.api_key,
         # location: JsonLocation = None,
         cache_storage: (
@@ -53,9 +58,11 @@ class OpenWeathermapController(AbstractContextManager):
         cache_ttl: int = 900,
         force_cache: bool = True,
         debug_http_response: bool = False,
-    ):
+    ) -> None:
         self.location_file: str | Path = location_file
         self.api_key: str = api_key
+        self.units: str = units.lower()
+        self.forecast_days: int = forecast_days
         if cache_storage is None:
             cache_storage = owm_hishel_filestorage_dependency(ttl=cache_ttl)
         self.cache_storage: t.Union[
@@ -83,14 +90,35 @@ class OpenWeathermapController(AbstractContextManager):
         if traceback:
             raise traceback
 
-    def current_weather(self):
-        current_weather = get_current_weather(
-            location_obj=self.location,
-            cache_storage=self.cache_storage,
-            debug_http_response=self.debug_http_response,
-        )
+    def current_weather(self) -> OWMCurrentWeather:
+        try:
+            _current_weather: OWMCurrentWeather = get_current_weather(
+                location_obj=self.location,
+                units=self.units,
+                cache_storage=self.cache_storage,
+                debug_http_response=self.debug_http_response,
+            )
 
-        return current_weather
+            return _current_weather
+        except Exception as exc:
+            msg = Exception(
+                f"Unhandled exception getting current weather. Details: {exc}"
+            )
+            log.error(msg)
 
-    def weather_forecast(self):
-        pass
+            raise exc
+
+    def weather_forecast(self) -> OWMForecastWeather:
+        try:
+            _weather_forecast: OWMForecastWeather = get_forecast_weather(
+                location_obj=self.location,
+            )
+
+            return _weather_forecast
+        except Exception as exc:
+            msg = Exception(
+                f"Unhandled exception getting weather forecast. Details: {exc}"
+            )
+            log.error(msg)
+
+            raise exc

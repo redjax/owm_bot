@@ -4,7 +4,7 @@ import typing as t
 from datetime import datetime
 import logging
 
-log = logging.getLogger("weatherbot.domain.owm.weather.current")
+log = logging.getLogger("owm_bot.domain.Weather.current")
 
 from decimal import Decimal
 
