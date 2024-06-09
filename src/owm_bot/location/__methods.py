@@ -35,12 +35,11 @@ def load_location_from_file(
 def get_missing_coords(
     location_obj: JsonLocation = None,
     cache_storage: (
-        hishel.FileStorage | hishel.SQLiteStorage | hishel.InMemoryStorage
+        t.Union[hishel.FileStorage, hishel.SQLiteStorage, hishel.InMemoryStorage] | None
     ) = None,
     debug_http_response: bool = False,
 ) -> JsonLocation:
     if cache_storage is None:
-        # cache_storage = httpx_utils.get_hishel_file_storage(cache_dir=CACHE_DIR)
         cache_storage = owm_hishel_filestorage_dependency()
 
     if location_obj.lat is None or location_obj.lon is None:

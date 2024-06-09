@@ -23,6 +23,7 @@ from owm_bot.location import (
     init_location,
     geolocate,
 )
+from owm_bot.controllers import OpenWeathermapController
 
 log = logging.getLogger("owm_bot")
 
@@ -51,8 +52,12 @@ if __name__ == "__main__":
     setup_logging(name="owm_bot", log_level=settings.log_level)
     setup_dirs()
 
-    log.debug(f"Settings: {settings}")
-    log.debug(f"OWM Settings: {owm_settings}")
+    # log.debug(f"Settings: {settings}")
+    # log.debug(f"OWM Settings: {owm_settings}")
 
-    location: JsonLocation = init_location()
-    log.debug(f"Location: {location}")
+    # location: JsonLocation = init_location()
+    # log.debug(f"Location: {location}")
+
+    with OpenWeathermapController() as owm_ctl:
+        current_weather = owm_ctl.current_weather()
+        log.debug(f"Current weather: {current_weather}")
