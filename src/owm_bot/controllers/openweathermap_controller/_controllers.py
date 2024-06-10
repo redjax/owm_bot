@@ -117,7 +117,7 @@ class OpenWeathermapController(AbstractContextManager):
             raise exc
 
         if save_pq:
-            log.info(f"Saving current weather to file '{self.pq_file}'")
+            log.info(f"Saving current weather to file '{self.current_weather_pq_file}'")
 
             try:
                 update_current_weather_parqeut_file(

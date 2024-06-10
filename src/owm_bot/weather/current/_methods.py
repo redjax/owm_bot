@@ -18,6 +18,7 @@ from owm_bot.core.depends import (
 from owm_bot.domain.Location import JsonLocation
 
 from owm_bot.domain.Weather import OWMCurrentWeather
+from owm_bot.utils.request_utils import build_request
 
 from red_utils.ext import httpx_utils
 import httpx
@@ -44,12 +45,13 @@ def current_weather(
         "appid": api_key,
     }
 
+    req: httpx.Request = build_request(
+        url=OPENWEATHERMAP_CURRENT_WEATHER_URL, params=params
+    )
+
     with httpx_utils.HishelCacheClientController(
         force_cache=force_cache, storage=cache_storage
     ) as http_ctl:
-        req: httpx.Request = http_ctl.new_request(
-            url=OPENWEATHERMAP_CURRENT_WEATHER_URL, params=params
-        )
 
         try:
             res: httpx.Response = http_ctl.send_request(request=req)
