@@ -4,7 +4,7 @@ from pathlib import Path
 
 log = logging.getLogger("owm_bot.location.methods")
 
-from owm_bot.core.paths import LOCATIONS_PQ_FILE
+from owm_bot.core.paths import LOCATION_PQ_FILE
 from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader, OwmGeoLookup
 from owm_bot.core.config import owm_settings
 from owm_bot.core.depends import owm_hishel_filestorage_dependency

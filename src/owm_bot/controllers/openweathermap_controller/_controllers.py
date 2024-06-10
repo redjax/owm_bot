@@ -3,8 +3,7 @@ from pathlib import Path
 import logging
 from contextlib import AbstractContextManager
 
-from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
-from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
+from owm_bot.domain.Weather import OWMCurrentWeather, OWMForecastWeather
 
 log = logging.getLogger("owm_bot.controllers.openweathermap_controller")
 
@@ -17,13 +16,14 @@ from owm_bot.core import (
     OWM_HTTP_CACHE_DIR,
     HTTP_CACHE_DIR,
 )
+from owm_bot.core import CURRENT_WEATHER_PQ_FILE, FORECAST_WEATHER_PQ_FILE
 from owm_bot.core.depends import (
     hishel_filestorage_dependency,
     owm_hishel_filestorage_dependency,
 )
 from owm_bot.location import (
-    LocationsPQFileController,
-    LocationsJSONFileController,
+    LocationPQFileController,
+    LocationJSONFileController,
 )
 from owm_bot.weather import (
     CurrentWeatherPQFileController,
@@ -38,6 +38,10 @@ from owm_bot.location import (
     update_location_coords,
 )
 from owm_bot.weather import get_current_weather, get_forecast_weather
+from .__methods import (
+    update_current_weather_parqeut_file,
+    update_weather_forecast_parquet_file,
+)
 
 import hishel
 import httpx
@@ -58,6 +62,7 @@ class OpenWeathermapController(AbstractContextManager):
         cache_ttl: int = 900,
         force_cache: bool = True,
         debug_http_response: bool = False,
+        pq_file: t.Union[str, Path] = CURRENT_WEATHER_PQ_FILE,
     ) -> None:
         self.location_file: str | Path = location_file
         self.api_key: str = api_key
@@ -70,6 +75,7 @@ class OpenWeathermapController(AbstractContextManager):
         ] = cache_storage
         self.force_cache: bool = force_cache
         self.debug_http_response: bool = debug_http_response
+        self.pq_file: Path = Path(f"{pq_file}")
 
         self.location: JsonLocation | None = None
 
@@ -90,7 +96,7 @@ class OpenWeathermapController(AbstractContextManager):
         if traceback:
             raise traceback
 
-    def current_weather(self) -> OWMCurrentWeather:
+    def current_weather(self, save_pq: bool = True) -> OWMCurrentWeather:
         try:
             _current_weather: OWMCurrentWeather = get_current_weather(
                 location_obj=self.location,
@@ -99,7 +105,6 @@ class OpenWeathermapController(AbstractContextManager):
                 debug_http_response=self.debug_http_response,
             )
 
-            return _current_weather
         except Exception as exc:
             msg = Exception(
                 f"Unhandled exception getting current weather. Details: {exc}"
@@ -108,13 +113,29 @@ class OpenWeathermapController(AbstractContextManager):
 
             raise exc
 
-    def weather_forecast(self) -> OWMForecastWeather:
+        if save_pq:
+            log.info(f"Saving current weather to file '{self.pq_file}'")
+
+            try:
+                update_current_weather_parqeut_file(
+                    new_data=_current_weather.model_dump(), pq_file=self.pq_file
+                )
+            except Exception as exc:
+                msg = Exception(
+                    f"Unhandled exception updating current weather history file '{self.pq_file}.' Details: {exc}"
+                )
+                log.error(msg)
+
+                pass
+
+        return _current_weather
+
+    def weather_forecast(self, save_pq: bool = True) -> OWMForecastWeather:
         try:
             _weather_forecast: OWMForecastWeather = get_forecast_weather(
                 location_obj=self.location,
             )
 
-            return _weather_forecast
         except Exception as exc:
             msg = Exception(
                 f"Unhandled exception getting weather forecast. Details: {exc}"
@@ -122,3 +143,20 @@ class OpenWeathermapController(AbstractContextManager):
             log.error(msg)
 
             raise exc
+
+        if save_pq:
+            log.info(f"Saving weather forecast to file '{self.pq_file}'")
+
+            try:
+                update_current_weather_parqeut_file(
+                    new_data=_weather_forecast.model_dump(), pq_file=self.pq_file
+                )
+            except Exception as exc:
+                msg = Exception(
+                    f"Unhandled exception updating weather forecast history file '{self.pq_file}.' Details: {exc}"
+                )
+                log.error(msg)
+
+                pass
+
+        return _weather_forecast

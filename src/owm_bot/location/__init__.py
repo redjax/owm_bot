@@ -8,6 +8,6 @@ from .__methods import (
 from . import geolocate
 from . import controllers
 from .controllers import (
-    LocationsJSONFileController,
-    LocationsPQFileController,
+    LocationJSONFileController,
+    LocationPQFileController,
 )

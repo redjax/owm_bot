@@ -9,7 +9,7 @@ OUTPUT_DIR: Path = Path(f"{DATA_DIR}/output")
 HTTP_CACHE_DIR: Path = Path(f"{CACHE_DIR}/http")
 OWM_HTTP_CACHE_DIR: Path = Path(f"{HTTP_CACHE_DIR}/openweathermap")
 
-LOCATIONS_PQ_FILE: Path = Path(f"{PQ_DIR}/openweathermap/locations.parquet")
+LOCATION_PQ_FILE: Path = Path(f"{PQ_DIR}/openweathermap/locations.parquet")
 CURRENT_WEATHER_PQ_FILE: Path = Path(
     f"{PQ_DIR}/openweathermap/current_weather_history.parquet"
 )

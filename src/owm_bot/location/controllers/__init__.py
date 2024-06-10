@@ -1,4 +1,4 @@
 from ._controllers import (
-    LocationsPQFileController,
-    LocationsJSONFileController,
+    LocationPQFileController,
+    LocationJSONFileController,
 )

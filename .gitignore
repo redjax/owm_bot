@@ -198,6 +198,7 @@ cython_debug/
 ## Ignore mkdocs builds
 site/
 
+.data/owm_bot/parquet
 .data/owm_bot/owm_api_key
 .data/owm_bot/locations.json
 .data/owm_bot/location.json

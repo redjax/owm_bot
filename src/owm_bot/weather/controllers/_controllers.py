@@ -16,7 +16,7 @@ from owm_bot.core import (
     CURRENT_WEATHER_PQ_FILE,
     PQ_ENGINE,
     FORECAST_WEATHER_PQ_FILE,
-    LOCATIONS_PQ_FILE,
+    LOCATION_PQ_FILE,
 )
 from owm_bot.core.depends import (
     hishel_filestorage_dependency,
@@ -79,11 +79,27 @@ class CurrentWeatherPQFileController(AbstractContextManager):
         if traceback:
             raise traceback
 
+    def ensure_pq_parent_dir_exists(self) -> None:
+        if not self.pq_file.parent.exists():
+            try:
+                self.pq_file.parent.mkdir(exist_ok=True, parents=True)
+
+                return
+            except Exception as exc:
+                msg = Exception(
+                    f"Unhandled exception creating path '{self.pq_file.parent}'. Details: {exc}"
+                )
+                log.error(msg)
+
+                raise exc
+
     def update_df(
         self,
         new_data: t.Union[pd.DataFrame, dict, list[dict], list[pd.DataFrame]] = None,
         save_pq: bool = True,
     ):
+        self.ensure_pq_parent_dir_exists()
+
         ## If self.df is None or an empty DataFrame, set to True with if statement below
         EMPTY_INIT_DF: bool = False
         if (isinstance(self.df, pd.DataFrame) and self.df.empty) or self.df is None:

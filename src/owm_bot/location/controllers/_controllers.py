@@ -17,7 +17,7 @@ from owm_bot.core.paths import (
     SERIALIZE_DIR,
     CURRENT_WEATHER_PQ_FILE,
     FORECAST_WEATHER_PQ_FILE,
-    LOCATIONS_PQ_FILE,
+    LOCATION_PQ_FILE,
 )
 from owm_bot.utils import data_utils
 from owm_bot.domain.Location import JsonLocation
@@ -26,10 +26,10 @@ import pandas as pd
 from red_utils.ext.dataframe_utils import pandas_utils
 
 
-class LocationsPQFileController(AbstractContextManager):
+class LocationPQFileController(AbstractContextManager):
     def __init__(
         self,
-        pq_filepath: t.Union[str, Path] = LOCATIONS_PQ_FILE,
+        pq_filepath: t.Union[str, Path] = LOCATION_PQ_FILE,
         pq_engine: str = PQ_ENGINE,
     ):
         self.pq_file = pq_filepath
@@ -85,7 +85,7 @@ class LocationsPQFileController(AbstractContextManager):
         return dicts
 
 
-class LocationsJSONFileController(AbstractContextManager):
+class LocationJSONFileController(AbstractContextManager):
     def __init__(self):
         pass
 

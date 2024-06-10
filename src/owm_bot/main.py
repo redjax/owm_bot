@@ -24,6 +24,11 @@ from owm_bot.location import (
     geolocate,
 )
 from owm_bot.controllers import OpenWeathermapController
+from owm_bot.controllers.openweathermap_controller import (
+    update_weather_forecast_parquet_file,
+    update_current_weather_parqeut_file,
+    update_locations_parquet_file,
+)
 
 log = logging.getLogger("owm_bot")
 
@@ -52,11 +57,11 @@ if __name__ == "__main__":
     setup_logging(name="owm_bot", log_level=settings.log_level)
     setup_dirs()
 
-    # log.debug(f"Settings: {settings}")
-    # log.debug(f"OWM Settings: {owm_settings}")
+    log.debug(f"Settings: {settings}")
+    log.debug(f"OWM Settings: {owm_settings}")
 
-    # location: JsonLocation = init_location()
-    # log.debug(f"Location: {location}")
+    location: JsonLocation = init_location()
+    log.debug(f"Location: {location}")
 
     with OpenWeathermapController(units="standard") as owm_ctl:
         current_weather = owm_ctl.current_weather()
