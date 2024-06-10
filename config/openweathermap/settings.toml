@@ -1,6 +1,7 @@
 [default]
 
 owm_location_file = "location.json"
+owm_units = "standard"
 
 [dev]
 

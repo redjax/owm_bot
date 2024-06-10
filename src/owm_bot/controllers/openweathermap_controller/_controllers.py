@@ -50,11 +50,12 @@ from .__methods import (
 import hishel
 import httpx
 
+
 class OpenWeathermapController(AbstractContextManager):
     def __init__(
         self,
         location_file: t.Union[str, Path] = owm_settings.location_file,
-        units: str = "standard",
+        units: str = owm_settings.units,
         forecast_days: int = 16,
         api_key: str = owm_settings.api_key,
         # location: JsonLocation = None,

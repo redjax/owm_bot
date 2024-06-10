@@ -25,10 +25,11 @@ import hishel
 import httpx
 from red_utils.ext import httpx_utils
 
+
 def weather_forecast(
     location: JsonLocation = None,
     days: int = 16,
-    units: str = "standard",
+    units: str = owm_settings.units,
     api_key: str = owm_settings.api_key,
     cache_storage: (
         t.Union[hishel.FileStorage, hishel.InMemoryStorage, hishel.SQLiteStorage] | None

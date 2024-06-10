@@ -35,6 +35,7 @@ class OpenweathermapSettings(BaseSettings):
     location_file: t.Union[str, Path] = Field(
         default=DYNACONF_OWM_SETTINGS.OWM_LOCATION_FILE, env="OWM_LOCATION_FILE"
     )
+    units: str = Field(default=DYNACONF_OWM_SETTINGS.OWM_UNITS, env="OWM_UNITS")
 
 
 settings: AppSettings = AppSettings()

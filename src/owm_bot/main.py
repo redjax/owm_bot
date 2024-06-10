@@ -67,7 +67,7 @@ if __name__ == "__main__":
     location: JsonLocation = init_location()
     log.debug(f"Location: {location}")
 
-    with OpenWeathermapController(units="standard") as owm_ctl:
+    with OpenWeathermapController(units=owm_settings.units) as owm_ctl:
         current_weather: OWMCurrentWeather = owm_ctl.current_weather(save_pq=True)
         log.debug(f"Current weather: {current_weather}")
 

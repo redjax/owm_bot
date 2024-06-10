@@ -23,10 +23,11 @@ import hishel
 import httpx
 import pandas as pd
 
+
 def get_current_weather(
     api_key: str = owm_settings.api_key,
     location_obj: JsonLocation = None,
-    units: str = "standard",
+    units: str = owm_settings.units,
     cache_storage: (
         t.Union[hishel.FileStorage, hishel.SQLiteStorage, hishel.InMemoryStorage] | None
     ) = None,
@@ -54,7 +55,7 @@ def get_current_weather(
 def get_forecast_weather(
     api_key: str = owm_settings.api_key,
     location_obj: JsonLocation = None,
-    units: str = "standard",
+    units: str = owm_settings.units,
     days: int = 16,
     cache_storage: (
         t.Union[hishel.FileStorage, hishel.SQLiteStorage, hishel.InMemoryStorage] | None
