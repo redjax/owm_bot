@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import typing as t
 
@@ -7,9 +9,8 @@ from decimal import Decimal
 
 from owm_bot.domain.Common.schemas import OWMCoord
 
-from pydantic import BaseModel, Field, ValidationError, field_validator, computed_field
+from pydantic import BaseModel, Field, ValidationError, computed_field, field_validator
 from red_utils.ext import time_utils
-
 
 class OWMForecastMain(BaseModel):
     temp: Decimal = Field(default=None, decimal_places=2)

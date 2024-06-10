@@ -1,43 +1,47 @@
-import typing as t
-from pathlib import Path
-import logging
+from __future__ import annotations
+
 from contextlib import AbstractContextManager
+import logging
+from pathlib import Path
+import typing as t
 
 from owm_bot.domain.Weather import OWMCurrentWeather, OWMForecastWeather
 
 log = logging.getLogger("owm_bot.controllers.openweathermap_controller")
 
-from owm_bot.core import settings, owm_settings
 from owm_bot.core import (
-    DATA_DIR,
-    PQ_DIR,
     CACHE_DIR,
+    CURRENT_WEATHER_PQ_FILE,
+    DATA_DIR,
     ENSURE_DIRS,
-    OWM_HTTP_CACHE_DIR,
+    FORECAST_WEATHER_PQ_FILE,
     HTTP_CACHE_DIR,
+    OWM_HTTP_CACHE_DIR,
+    PQ_DIR,
+    owm_settings,
+    settings,
 )
-from owm_bot.core import CURRENT_WEATHER_PQ_FILE, FORECAST_WEATHER_PQ_FILE
 from owm_bot.core.depends import (
     hishel_filestorage_dependency,
     owm_hishel_filestorage_dependency,
 )
-from owm_bot.location import (
-    LocationPQFileController,
-    LocationJSONFileController,
-)
-from owm_bot.weather import (
-    CurrentWeatherPQFileController,
-    ForecastWeatherPQFileController,
-)
 from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader
-from owm_bot.utils.encoders import DecimalJsonEncoder
 from owm_bot.location import (
-    load_location_from_file,
+    LocationJSONFileController,
+    LocationPQFileController,
     init_location,
+    load_location_from_file,
     save_location_dict_to_file,
     update_location_coords,
 )
-from owm_bot.weather import get_current_weather, get_forecast_weather
+from owm_bot.utils.encoders import DecimalJsonEncoder
+from owm_bot.weather import (
+    CurrentWeatherPQFileController,
+    ForecastWeatherPQFileController,
+    get_current_weather,
+    get_forecast_weather,
+)
+
 from .__methods import (
     update_current_weather_parqeut_file,
     update_weather_forecast_parquet_file,
@@ -45,7 +49,6 @@ from .__methods import (
 
 import hishel
 import httpx
-
 
 class OpenWeathermapController(AbstractContextManager):
     def __init__(

@@ -1,11 +1,13 @@
-import typing as t
+from __future__ import annotations
+
 import logging
+import typing as t
 
 log = logging.getLogger("owm_bot.utils.request_utils")
 
 import typing
-import httpx
 
+import httpx
 
 def build_request(
     method: str = "GET",

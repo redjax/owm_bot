@@ -12,7 +12,6 @@ from owm_bot.core.paths import PQ_DIR
 import pandas as pd
 from red_utils.ext.dataframe_utils import pandas_utils
 
-
 def set_pandas_decimal_precision(precision: int = 2):
     assert precision, ValueError("Missing an integer representing decimal precision")
     assert isinstance(precision, int), TypeError(

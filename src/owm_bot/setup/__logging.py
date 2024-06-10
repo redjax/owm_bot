@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import logging
 import logging.config
 import typing as t
 
 import red_logging
-
 
 def setup_logging(name: str = "app", log_level: str = "INFO"):
     app_formatter = red_logging.get_formatter_config(

@@ -1,5 +1,7 @@
-import typing as t
+from __future__ import annotations
+
 from pathlib import Path
+import typing as t
 
 from dynaconf import Dynaconf
 from pydantic import Field, ValidationError, field_validator

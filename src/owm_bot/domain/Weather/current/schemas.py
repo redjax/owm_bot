@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import typing as t
 from datetime import datetime
 import logging
+import typing as t
 
 log = logging.getLogger("owm_bot.domain.Weather.current")
 
@@ -20,7 +20,6 @@ from pydantic import (
     field_validator,
 )
 from red_utils.ext import time_utils
-
 
 class OWMWeather(BaseModel):
     id: int = Field(default=None)

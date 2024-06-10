@@ -1,41 +1,42 @@
-import typing as t
-from pathlib import Path
-import logging
+from __future__ import annotations
+
 from contextlib import AbstractContextManager
+import logging
+from pathlib import Path
+import typing as t
 
 log = logging.getLogger("owm_bot.weather.controllers")
 
-from owm_bot.core import settings, owm_settings
 from owm_bot.core import (
-    DATA_DIR,
-    PQ_DIR,
     CACHE_DIR,
-    ENSURE_DIRS,
-    OWM_HTTP_CACHE_DIR,
-    HTTP_CACHE_DIR,
     CURRENT_WEATHER_PQ_FILE,
-    PQ_ENGINE,
+    DATA_DIR,
+    ENSURE_DIRS,
     FORECAST_WEATHER_PQ_FILE,
+    HTTP_CACHE_DIR,
     LOCATION_PQ_FILE,
+    OWM_HTTP_CACHE_DIR,
+    PQ_DIR,
+    PQ_ENGINE,
+    owm_settings,
+    settings,
 )
 from owm_bot.core.depends import (
     hishel_filestorage_dependency,
     owm_hishel_filestorage_dependency,
 )
-
 from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader
-from owm_bot.utils.encoders import DecimalJsonEncoder
 from owm_bot.location import (
-    load_location_from_file,
     init_location,
+    load_location_from_file,
     save_location_dict_to_file,
     update_location_coords,
 )
+from owm_bot.utils.encoders import DecimalJsonEncoder
 
 import hishel
 import httpx
 import pandas as pd
-
 
 class CurrentWeatherPQFileController(AbstractContextManager):
     def __init__(

@@ -1,13 +1,13 @@
-from pathlib import Path
+from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 log = logging.getLogger("owm_bot.setup")
 
 from owm_bot.core.paths import ENSURE_DIRS
 
 from red_utils.std import path_utils
-
 
 def setup_dirs(ensure_dirs: list[Path] = ENSURE_DIRS):
     try:

@@ -1,22 +1,24 @@
-from .config import AppSettings, settings, OpenweathermapSettings, owm_settings
+from __future__ import annotations
+
+from .config import AppSettings, OpenweathermapSettings, owm_settings, settings
 from .constants import (
     OPENWEATHERMAP_BASE_URL,
-    OPENWEATHERMAP_GEO_URL,
-    OPENWEATHERMAP_ONECALL_URL,
     OPENWEATHERMAP_CURRENT_WEATHER_URL,
     OPENWEATHERMAP_DAILY_FORECAST_WEATHER_URL,
+    OPENWEATHERMAP_GEO_URL,
+    OPENWEATHERMAP_ONECALL_URL,
+    PQ_ENGINE,
 )
-from .constants import PQ_ENGINE
 from .paths import (
-    DATA_DIR,
     CACHE_DIR,
-    SERIALIZE_DIR,
-    PQ_DIR,
-    OUTPUT_DIR,
-    ENSURE_DIRS,
-    HTTP_CACHE_DIR,
-    OWM_HTTP_CACHE_DIR,
     CURRENT_WEATHER_PQ_FILE,
+    DATA_DIR,
+    ENSURE_DIRS,
     FORECAST_WEATHER_PQ_FILE,
+    HTTP_CACHE_DIR,
     LOCATION_PQ_FILE,
+    OUTPUT_DIR,
+    OWM_HTTP_CACHE_DIR,
+    PQ_DIR,
+    SERIALIZE_DIR,
 )

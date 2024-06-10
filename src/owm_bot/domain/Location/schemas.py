@@ -13,7 +13,6 @@ from owm_bot.utils.encoders import DecimalJsonEncoder
 
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
-
 class JsonLocationBase(BaseModel):
     city_name: str | None = Field(default=None)
     local_names: dict | None = Field(default=None)

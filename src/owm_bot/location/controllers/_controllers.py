@@ -12,19 +12,18 @@ from contextlib import AbstractContextManager, contextmanager
 from owm_bot.core.constants import PQ_ENGINE
 from owm_bot.core.paths import (
     CACHE_DIR,
-    DATA_DIR,
-    PQ_DIR,
-    SERIALIZE_DIR,
     CURRENT_WEATHER_PQ_FILE,
+    DATA_DIR,
     FORECAST_WEATHER_PQ_FILE,
     LOCATION_PQ_FILE,
+    PQ_DIR,
+    SERIALIZE_DIR,
 )
-from owm_bot.utils import data_utils
 from owm_bot.domain.Location import JsonLocation
+from owm_bot.utils import data_utils
 
 import pandas as pd
 from red_utils.ext.dataframe_utils import pandas_utils
-
 
 class LocationPQFileController(AbstractContextManager):
     def __init__(

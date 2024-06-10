@@ -1,29 +1,29 @@
-import typing as t
+from __future__ import annotations
+
 import logging
+import typing as t
 
 log = logging.getLogger("owm_bot.weather.forecast")
 
-from owm_bot.core import settings, owm_settings
-from owm_bot.core.paths import DATA_DIR, CACHE_DIR, HTTP_CACHE_DIR, OWM_HTTP_CACHE_DIR
+from owm_bot.core import owm_settings, settings
 from owm_bot.core.constants import (
-    PQ_ENGINE,
     OPENWEATHERMAP_BASE_URL,
     OPENWEATHERMAP_CURRENT_WEATHER_URL,
     OPENWEATHERMAP_DAILY_FORECAST_WEATHER_URL,
+    PQ_ENGINE,
 )
 from owm_bot.core.depends import (
-    owm_hishel_filestorage_dependency,
     hishel_filestorage_dependency,
+    owm_hishel_filestorage_dependency,
 )
+from owm_bot.core.paths import CACHE_DIR, DATA_DIR, HTTP_CACHE_DIR, OWM_HTTP_CACHE_DIR
 from owm_bot.domain.Location import JsonLocation
-
 from owm_bot.domain.Weather import OWMForecastWeather
 from owm_bot.utils.request_utils import build_request
 
-from red_utils.ext import httpx_utils
-import httpx
 import hishel
-
+import httpx
+from red_utils.ext import httpx_utils
 
 def weather_forecast(
     location: JsonLocation = None,

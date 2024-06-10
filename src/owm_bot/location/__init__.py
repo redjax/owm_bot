@@ -1,12 +1,13 @@
+from __future__ import annotations
+
+from . import controllers, geolocate
 from .__methods import (
-    load_location_from_file,
-    update_location_coords,
     get_missing_coords,
-    save_location_dict_to_file,
     init_location,
+    load_location_from_file,
+    save_location_dict_to_file,
+    update_location_coords,
 )
-from . import geolocate
-from . import controllers
 from .controllers import (
     LocationJSONFileController,
     LocationPQFileController,

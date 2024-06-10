@@ -1,12 +1,13 @@
-import typing as t
+from __future__ import annotations
+
 import logging
+import typing as t
 
 log = logging.getLogger("owm_bot.controllers.openweathermap_controller.methods")
 
+from owm_bot.core.config import owm_settings
 from owm_bot.domain.Location import JsonLocation
 from owm_bot.location import geolocate
-from owm_bot.core.config import owm_settings
-
 
 def handle_missing_coords(
     location_obj: JsonLocation = None, debug_http_response: bool = False

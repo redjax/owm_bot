@@ -1,20 +1,21 @@
-import typing as t
+from __future__ import annotations
+
 import logging
 from pathlib import Path
+import typing as t
 
 log = logging.getLogger("owm_bot.location.methods")
 
-from owm_bot.core.paths import LOCATION_PQ_FILE
-from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader, OwmGeoLookup
 from owm_bot.core.config import owm_settings
 from owm_bot.core.depends import owm_hishel_filestorage_dependency
+from owm_bot.core.paths import LOCATION_PQ_FILE
+from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader, OwmGeoLookup
 from owm_bot.location.geolocate import get_coords
 from owm_bot.utils import data_utils
 
 import hishel
 import httpx
 import pandas as pd
-
 
 def load_location_from_file(
     location_file: t.Union[str, Path] = owm_settings.location_file

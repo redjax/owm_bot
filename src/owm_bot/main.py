@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 import logging
 
+from owm_bot.controllers import OpenWeathermapController
+from owm_bot.controllers.openweathermap_controller import (
+    update_current_weather_parqeut_file,
+    update_locations_parquet_file,
+    update_weather_forecast_parquet_file,
+)
 from owm_bot.core.config import (
     AppSettings,
-    settings,
     OpenweathermapSettings,
     owm_settings,
+    settings,
 )
-from owm_bot.domain.Location.schemas import JsonLocation
-from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
-from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
-from owm_bot.setup import setup_logging, setup_dirs
 from owm_bot.core.paths import (
     CACHE_DIR,
     DATA_DIR,
@@ -17,20 +21,18 @@ from owm_bot.core.paths import (
     OUTPUT_DIR,
     SERIALIZE_DIR,
 )
+from owm_bot.domain.Location.schemas import JsonLocation
+from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
+from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
 from owm_bot.location import (
-    load_location_from_file,
-    get_missing_coords,
-    update_location_coords,
-    save_location_dict_to_file,
-    init_location,
     geolocate,
+    get_missing_coords,
+    init_location,
+    load_location_from_file,
+    save_location_dict_to_file,
+    update_location_coords,
 )
-from owm_bot.controllers import OpenWeathermapController
-from owm_bot.controllers.openweathermap_controller import (
-    update_weather_forecast_parquet_file,
-    update_current_weather_parqeut_file,
-    update_locations_parquet_file,
-)
+from owm_bot.setup import setup_dirs, setup_logging
 
 log = logging.getLogger("owm_bot")
 

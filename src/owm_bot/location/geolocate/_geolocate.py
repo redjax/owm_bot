@@ -1,16 +1,17 @@
-import typing as t
+from __future__ import annotations
+
 import logging
+import typing as t
 
 log = logging.getLogger("owm_bot.location.geolocate")
 
-from owm_bot.core.depends import owm_hishel_filestorage_dependency
-from owm_bot.core.constants import OPENWEATHERMAP_GEO_URL
 from owm_bot.core.config import owm_settings
+from owm_bot.core.constants import OPENWEATHERMAP_GEO_URL
+from owm_bot.core.depends import owm_hishel_filestorage_dependency
 
-import httpx
 import hishel
+import httpx
 from red_utils.ext import httpx_utils
-
 
 def get_coords(
     city_name: str | None = None,

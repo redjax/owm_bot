@@ -1,25 +1,27 @@
-import typing as t
+from __future__ import annotations
+
 import logging
 from pathlib import Path
+import typing as t
 
 from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
 from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
 
 log = logging.getLogger("owm_bot.weather.methods")
 
-from owm_bot.core.paths import LOCATION_PQ_FILE
-from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader, OwmGeoLookup
 from owm_bot.core.config import owm_settings
 from owm_bot.core.depends import owm_hishel_filestorage_dependency
+from owm_bot.core.paths import LOCATION_PQ_FILE
+from owm_bot.domain.Location import JsonLocation, JsonLocationsLoader, OwmGeoLookup
 from owm_bot.utils import data_utils
 from owm_bot.utils.owm_utils import handle_missing_coords
+
 from .current import current_weather
 from .forecast import weather_forecast
 
 import hishel
 import httpx
 import pandas as pd
-
 
 def get_current_weather(
     api_key: str = owm_settings.api_key,
