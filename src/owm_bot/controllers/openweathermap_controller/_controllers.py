@@ -62,7 +62,8 @@ class OpenWeathermapController(AbstractContextManager):
         cache_ttl: int = 900,
         force_cache: bool = True,
         debug_http_response: bool = False,
-        pq_file: t.Union[str, Path] = CURRENT_WEATHER_PQ_FILE,
+        current_weather_pq_file: t.Union[str, Path] = CURRENT_WEATHER_PQ_FILE,
+        weather_forecast_pq_file: t.Union[str, Path] = FORECAST_WEATHER_PQ_FILE,
     ) -> None:
         self.location_file: str | Path = location_file
         self.api_key: str = api_key
@@ -75,7 +76,8 @@ class OpenWeathermapController(AbstractContextManager):
         ] = cache_storage
         self.force_cache: bool = force_cache
         self.debug_http_response: bool = debug_http_response
-        self.pq_file: Path = Path(f"{pq_file}")
+        self.current_weather_pq_file: Path = Path(f"{current_weather_pq_file}")
+        self.weather_forecast_pq_file: Path = Path(f"{weather_forecast_pq_file}")
 
         self.location: JsonLocation | None = None
 
@@ -96,9 +98,10 @@ class OpenWeathermapController(AbstractContextManager):
         if traceback:
             raise traceback
 
-    def current_weather(self, save_pq: bool = True) -> OWMCurrentWeather:
+    def current_weather(self, save_pq: bool = False) -> OWMCurrentWeather:
         try:
             _current_weather: OWMCurrentWeather = get_current_weather(
+                api_key=self.api_key,
                 location_obj=self.location,
                 units=self.units,
                 cache_storage=self.cache_storage,
@@ -118,11 +121,12 @@ class OpenWeathermapController(AbstractContextManager):
 
             try:
                 update_current_weather_parqeut_file(
-                    new_data=_current_weather.model_dump(), pq_file=self.pq_file
+                    new_data=_current_weather.model_dump(),
+                    pq_file=self.current_weather_pq_file,
                 )
             except Exception as exc:
                 msg = Exception(
-                    f"Unhandled exception updating current weather history file '{self.pq_file}.' Details: {exc}"
+                    f"Unhandled exception updating current weather history file '{self.current_weather_pq_file}.' Details: {exc}"
                 )
                 log.error(msg)
 
@@ -130,10 +134,15 @@ class OpenWeathermapController(AbstractContextManager):
 
         return _current_weather
 
-    def weather_forecast(self, save_pq: bool = True) -> OWMForecastWeather:
+    def weather_forecast(self, save_pq: bool = False) -> OWMForecastWeather:
         try:
             _weather_forecast: OWMForecastWeather = get_forecast_weather(
+                api_key=self.api_key,
                 location_obj=self.location,
+                units=self.units,
+                days=self.forecast_days,
+                cache_storage=self.cache_storage,
+                debug_http_response=self.debug_http_response,
             )
 
         except Exception as exc:
@@ -145,15 +154,18 @@ class OpenWeathermapController(AbstractContextManager):
             raise exc
 
         if save_pq:
-            log.info(f"Saving weather forecast to file '{self.pq_file}'")
+            log.info(
+                f"Saving weather forecast to file '{self.weather_forecast_pq_file}'"
+            )
 
             try:
                 update_current_weather_parqeut_file(
-                    new_data=_weather_forecast.model_dump(), pq_file=self.pq_file
+                    new_data=_weather_forecast.model_dump(),
+                    pq_file=self.weather_forecast_pq_file,
                 )
             except Exception as exc:
                 msg = Exception(
-                    f"Unhandled exception updating weather forecast history file '{self.pq_file}.' Details: {exc}"
+                    f"Unhandled exception updating weather forecast history file '{self.weather_forecast_pq_file}.' Details: {exc}"
                 )
                 log.error(msg)
 

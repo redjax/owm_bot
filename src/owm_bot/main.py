@@ -7,6 +7,8 @@ from owm_bot.core.config import (
     owm_settings,
 )
 from owm_bot.domain.Location.schemas import JsonLocation
+from owm_bot.domain.Weather.current.schemas import OWMCurrentWeather
+from owm_bot.domain.Weather.forecast.schemas import OWMForecastWeather
 from owm_bot.setup import setup_logging, setup_dirs
 from owm_bot.core.paths import (
     CACHE_DIR,
@@ -64,8 +66,8 @@ if __name__ == "__main__":
     log.debug(f"Location: {location}")
 
     with OpenWeathermapController(units="standard") as owm_ctl:
-        current_weather = owm_ctl.current_weather()
+        current_weather: OWMCurrentWeather = owm_ctl.current_weather(save_pq=True)
         log.debug(f"Current weather: {current_weather}")
 
-        weather_forecast = owm_ctl.weather_forecast()
+        weather_forecast: OWMForecastWeather = owm_ctl.weather_forecast(save_pq=True)
         log.debug(f"Weather forecast: {weather_forecast}")
